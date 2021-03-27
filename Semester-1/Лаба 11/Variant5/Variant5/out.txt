@@ -1,0 +1,4 @@
+7:palindrom
+36:non-palindrome
+101:palindrom
+222:palindrom

@@ -1,0 +1,6 @@
+﻿  Task8.cpp
+C:\Users\Компьютер\Desktop\Projects\Лаба2\Task8\Task8\Task8.cpp(7,23): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\Компьютер\Desktop\Projects\Лаба2\Task8\Task8\Task8.cpp(14,23): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\Компьютер\Desktop\Projects\Лаба2\Task8\Task8\Task8.cpp(21,23): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\Компьютер\Desktop\Projects\Лаба2\Task8\Task8\Task8.cpp(29,25): warning C4244: =: преобразование "double" в "int", возможна потеря данных
+  Task8.vcxproj -> C:\Users\Компьютер\Desktop\Projects\Лаба2\Task8\Debug\Task8.exe

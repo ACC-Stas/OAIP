@@ -1,0 +1,7 @@
+﻿  Fusion.cpp
+C:\Users\Компьютер\Desktop\Projects\Проверочная\Fusion\Fusion\Fusion.cpp(22,21): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\Компьютер\Desktop\Projects\Проверочная\Fusion\Fusion\Fusion.cpp(26,20): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\Компьютер\Desktop\Projects\Проверочная\Fusion\Fusion\Fusion.cpp(26,52): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\Компьютер\Desktop\Projects\Проверочная\Fusion\Fusion\Fusion.cpp(51,22): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\Компьютер\Desktop\Projects\Проверочная\Fusion\Fusion\Fusion.cpp(58,20): warning C4018: <: несоответствие типов со знаком и без знака
+  Fusion.vcxproj -> C:\Users\Компьютер\Desktop\Projects\Проверочная\Fusion\Debug\Fusion.exe

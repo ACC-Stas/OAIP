@@ -1,0 +1,9 @@
+541:prime
+207:composite
+121:composite
+23:prime
+21:composite
+14:composite
+13:prime
+3:prime
+2:prime

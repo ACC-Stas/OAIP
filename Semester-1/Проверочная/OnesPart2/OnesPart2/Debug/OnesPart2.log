@@ -1,0 +1,3 @@
+﻿  OnesPart2.cpp
+C:\Users\Компьютер\Desktop\Projects\Проверочная\OnesPart2\OnesPart2\OnesPart2.cpp(27,9): warning C4244: return: преобразование "__int64" в "int", возможна потеря данных
+  OnesPart2.vcxproj -> C:\Users\Компьютер\Desktop\Projects\Проверочная\OnesPart2\Debug\OnesPart2.exe

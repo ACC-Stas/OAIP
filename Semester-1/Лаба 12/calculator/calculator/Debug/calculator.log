@@ -1,0 +1,6 @@
+﻿  calculator.cpp
+C:\Users\Компьютер\Desktop\Projects\Лаба 12\calculator\calculator\calculator.cpp(3,10): warning C4067: непредвиденные лексемы за директивой препроцессора, требуется newline
+C:\Users\Компьютер\Desktop\Projects\Лаба 12\calculator\calculator\calculator.cpp(13,21): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\Компьютер\Desktop\Projects\Лаба 12\calculator\calculator\calculator.cpp(92,21): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\Компьютер\Desktop\Projects\Лаба 12\calculator\calculator\calculator.cpp(146,21): warning C4244: =: преобразование "double" в "__int64", возможна потеря данных
+  calculator.vcxproj -> C:\Users\Компьютер\Desktop\Projects\Лаба 12\calculator\Debug\calculator.exe

@@ -1,0 +1,6 @@
+﻿  divisibility396.cpp
+C:\Users\Компьютер\Desktop\Projects\Лаба 3\divisibility396\divisibility396\divisibility396.cpp(7,23): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\Компьютер\Desktop\Projects\Лаба 3\divisibility396\divisibility396\divisibility396.cpp(14,23): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\Компьютер\Desktop\Projects\Лаба 3\divisibility396\divisibility396\divisibility396.cpp(21,23): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\Компьютер\Desktop\Projects\Лаба 3\divisibility396\divisibility396\divisibility396.cpp(29,25): warning C4244: =: преобразование "double" в "int", возможна потеря данных
+  divisibility396.vcxproj -> C:\Users\Компьютер\Desktop\Projects\Лаба 3\divisibility396\Debug\divisibility396.exe

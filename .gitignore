@@ -1,0 +1,13 @@
+## for c++ vs
+
+*.sln
+*/Debug
+*/*/Debug
+*/*/*/Debug
+*/.vs
+*/*/.vs
+*/*/*/.vs
+*.exe
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
