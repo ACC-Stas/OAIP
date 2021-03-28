@@ -39,6 +39,12 @@ int main() {
 	std::cout << '\n';
 	std::cout << bst1.at(0) << '\n';
 	std::cout << bst1.at(-4) << '\n';
+	try {
+		std::cout << bst1.at(10) << '\n';
+	}
+	catch (std::exception& ex) {
+		std::cout << ex.what();
+	}
 	std::cout << bst1.at(11) << '\n';
 	bst1.at(0) = 200;
 	std::cout << "Test at\n";

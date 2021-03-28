@@ -15,30 +15,6 @@ class BST {
 	};
 	Node* root;
 	int size;
-	void insertNode(Node& node) {
-		bool placed = false;
-		Node* ptr = root;
-		while (!placed) {
-			if (ptr->key < node.key) {
-				if (ptr->rightChild != nullptr) {
-					ptr = ptr->rightChild;
-				}
-				else {
-					ptr->rightChild = &node;
-					placed = true;
-				}
-			}
-			else {
-				if (ptr->leftChild != nullptr) {
-					ptr = ptr->leftChild;
-				}
-				else {
-					ptr->leftChild = &node;
-					placed = true;
-				}
-			}
-		}
-	}
 	void clear(Node* n) {
 		if (n->leftChild != nullptr) {
 			clear(n->leftChild);
@@ -67,7 +43,6 @@ public:
 		root = new Node(key, value);
 		size = 1;
 	}
-public:
 	BST(const BST& bst) {
 		this->size = bst.size;
 		if (bst.size == 0) {
@@ -137,32 +112,104 @@ public:
 				size--;
 				erased = true;
 				if (ptrParent == nullptr) {
-					if (ptr->rightChild != nullptr) {
+					if (ptr->rightChild == nullptr && ptr->leftChild == nullptr) {
+						delete ptr;
+						root = nullptr;
+					}
+					else if (ptr->rightChild == nullptr && ptr->leftChild != nullptr) {
+						root = ptr->leftChild;
+						delete ptr;
+					}
+					else if (ptr->rightChild != nullptr && ptr->leftChild == nullptr) {
 						root = ptr->rightChild;
-						if (ptr->leftChild != nullptr) {
-							insertNode(*ptr->leftChild);
-						}
 						delete ptr;
 					}
 					else {
-						root = ptr->leftChild;
+						Node* startingNode = root;
+						Node* requiredNode = nullptr;
+						Node* requiredNodeParent = root;
+						startingNode = startingNode->rightChild;  //can go right only once
+						if (startingNode->leftChild == nullptr) {
+							requiredNode = startingNode;
+						}
+						else {
+							do {
+								requiredNodeParent = startingNode;
+								startingNode = startingNode->leftChild;
+								requiredNode = startingNode;
+							} while (startingNode->leftChild != nullptr);
+						}
+						if (requiredNodeParent->rightChild == requiredNode) {
+							requiredNodeParent->rightChild = requiredNode->rightChild; //there is no left child in required Node
+						}
+						else {
+							requiredNodeParent->leftChild = requiredNode->rightChild;
+						}
+						requiredNode->leftChild = root->leftChild;
+						requiredNode->rightChild = root->rightChild;
+						root = requiredNode;
 						delete ptr;
 					}
 				}
 				else {
-					if (ptrParent->leftChild == ptr) {
-						ptrParent->leftChild = nullptr;
+					if (ptr->rightChild == nullptr && ptr->leftChild == nullptr) {
+						if (ptrParent->rightChild == ptr) {
+							ptrParent->rightChild = nullptr;
+						}
+						else {
+							ptrParent->leftChild = nullptr;
+						}
+						delete ptr;
+					}
+					else if (ptr->rightChild == nullptr && ptr->leftChild != nullptr) {
+						if (ptrParent->rightChild == ptr) {
+							ptrParent->rightChild = ptr->leftChild;
+						}
+						else {
+							ptrParent->leftChild = ptr->leftChild;
+						}
+						delete ptr;
+					}
+					else if (ptr->rightChild != nullptr && ptr->leftChild == nullptr) {
+						if (ptrParent->rightChild == ptr) {
+							ptrParent->rightChild = ptr->rightChild;
+						}
+						else {
+							ptrParent->leftChild = ptr->rightChild;
+						}
+						delete ptr;
 					}
 					else {
-						ptrParent->rightChild = nullptr;
+						Node* startingNode = ptr;
+						Node* requiredNode = nullptr;
+						Node* requiredNodeParent = ptr;
+						startingNode = startingNode->rightChild;  //can go right only once
+						if (startingNode->leftChild == nullptr) {
+							requiredNode = startingNode;
+						}
+						else {
+							do {
+								requiredNodeParent = startingNode;
+								startingNode = startingNode->leftChild;
+								requiredNode = startingNode;
+							} while (startingNode->leftChild != nullptr);
+						}
+						if (requiredNodeParent->rightChild == requiredNode) {
+							requiredNodeParent->rightChild = requiredNode->rightChild; //there is no left child in required Node
+						}
+						else {
+							requiredNodeParent->leftChild = requiredNode->rightChild;
+						}
+						if (ptrParent->rightChild == ptr) {
+							ptrParent->rightChild = requiredNode;
+						}
+						else {
+							ptrParent->leftChild = requiredNode;
+						}
+						requiredNode->leftChild = ptr->leftChild;
+						requiredNode->rightChild = ptr->rightChild;
+						delete ptr;
 					}
-					if (ptr->rightChild != nullptr) {
-						insertNode(*ptr->rightChild);
-					}
-					if (ptr->leftChild != nullptr) {
-						insertNode(*ptr->leftChild);
-					}
-					delete ptr;
 				}
 			}
 			else if (ptr->key < key) {
