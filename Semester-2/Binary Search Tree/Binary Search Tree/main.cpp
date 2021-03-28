@@ -57,10 +57,10 @@ int main() {
 	bst1.insert(-4, 8);
 	bst1.insert(10, 5);
 	bst1.insert(11, 9);
-	std::cout << "Test upper_bound\n";
-	std::cout << bst1.upper_bound(10) << '\n';
-	std::cout << "Test lower_bound\n";
-	std::cout << bst1.lower_bound(10) << '\n';
+	std::cout << "Test next\n";
+	std::cout << bst1.next(10) << '\n';
+	std::cout << "Test previous\n";
+	std::cout << bst1.previous(10) << '\n';
 	std::cout << "Test copy constructor\n";
 	BST<int, int> bst2(bst1);
 	std::cout << "bst1:\n";

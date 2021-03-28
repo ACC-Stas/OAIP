@@ -3,7 +3,7 @@
 template<class keyType, class T>
 class BST {
 	struct Node {
-		const keyType key;
+		keyType key;
 		T value;
 		Node* rightChild; //bigger
 		Node* leftChild;  //smaller
@@ -297,52 +297,30 @@ public:
 		}
 		return isEmpty;
 	}
-	keyType upper_bound(keyType key) {  //return default key value, if haven't found bigger value
-		bool found = false;
-		keyType requiredKey;
+	keyType next(keyType key) {  //return default key value, if haven't found bigger value
+		keyType requiredKey = keyType();
 		Node* ptr = root;
-		if (ptr == nullptr) {
-			found = true;
-			requiredKey = keyType();
-		}
-		while (!found) {
+		while (ptr != nullptr) {
 			if (ptr->key <= key) {
-				if (ptr->rightChild != nullptr) {
-					ptr = ptr->rightChild;
-				}
-				else {
-					requiredKey = keyType();
-					found = true;
-				}
+				ptr = ptr->rightChild;
 			}
 			else if (ptr->key > key) {
-				found = true;
 				requiredKey = ptr->key;
+				ptr = ptr->leftChild;
 			}
 		}
 		return requiredKey;
 	}
-	keyType lower_bound(keyType key) {
-		bool found = false;
-		keyType requiredKey;
+	keyType previous(keyType key) {
+		keyType requiredKey = keyType();
 		Node* ptr = root;
-		if (ptr == nullptr) {
-			found = true;
-			requiredKey = keyType();
-		}
-		while (!found) {
-			if (ptr->key < key) {
-				if (ptr->rightChild != nullptr) {
-					ptr = ptr->rightChild;
-				}
-				else {
-					requiredKey = keyType();
-					found = true;
-				}
+		while (ptr != nullptr) {
+			if (ptr->key >= key) {
+				ptr = ptr->leftChild;
 			}
-			else if (ptr->key >= key) {
-				found = true;
+			else if (ptr->key < key) {
 				requiredKey = ptr->key;
+				ptr = ptr->rightChild;
 			}
 		}
 		return requiredKey;
