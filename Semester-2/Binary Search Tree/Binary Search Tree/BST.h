@@ -3,12 +3,11 @@
 template<class keyType, class T>
 class BST {
 	struct Node {
-		keyType key;
+		const keyType key;
 		T value;
 		Node* rightChild; //bigger
 		Node* leftChild;  //smaller
-		Node(keyType key, T value, Node* rightChild = nullptr, Node* leftChild = nullptr) {
-			this->key = key;
+		Node(keyType key, T value, Node* rightChild = nullptr, Node* leftChild = nullptr) : key(key) {
 			this->value = value;
 			this->rightChild = rightChild;
 			this->leftChild = leftChild;
