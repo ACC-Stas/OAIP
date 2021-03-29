@@ -1,21 +1,18 @@
-﻿#include <iostream>
-#include <vector>
+#pragma once
+#include <iterator>
 
 template<class keyType, class T>
-class BST {
+class Map {
+private:
 	struct Node {
 		keyType key;
 		T value;
 		Node* rightChild; //bigger
 		Node* leftChild;  //smaller
-		Node* previous;
-		Node* next;
-		Node(keyType key, T value, Node* rightChild = nullptr, Node* leftChild = nullptr, Node* previous = nullptr, Node* next = nullptr) : key(key) {
+		Node(keyType key, T value, Node* rightChild = nullptr, Node* leftChild = nullptr) : key(key) {
 			this->value = value;
 			this->rightChild = rightChild;
 			this->leftChild = leftChild;
-			this->previous = previous;
-			this->next = next;
 		}
 	};
 	Node* root;
@@ -39,25 +36,64 @@ class BST {
 			copyNode(*newNode.leftChild, *oldNode.leftChild);
 		}
 	}
-	void simmetricTraversal(Node* current, std::vector<Node*>& visitedNodes) {
-		if (current->leftChild != nullptr) {
-			simmetricTraversal(current->leftChild, visitedNodes);
+	Node* next(Node* node) {  //return default key value, if haven't found bigger value
+		keyType key = node->key;
+		Node* requiredPtr = nullptr;
+		Node* ptr = root;
+		while (ptr != nullptr) {
+			if (ptr->key <= key) {
+				ptr = ptr->rightChild;
+			}
+			else if (ptr->key > key) {
+				requiredPtr = ptr;
+				ptr = ptr->leftChild;
+			}
 		}
-		visitedNodes.push_back(current);
-		if (current->rightChild != nullptr) {
-			simmetricTraversal(current->rightChild, visitedNodes);
+		return requiredPtr;
+	}
+	Node* previous(Node* node) {
+		keyType key = node->key;
+		Node* requiredPtr = nullptr;
+		Node* ptr = root;
+		while (ptr != nullptr) {
+			if (ptr->key >= key) {
+				ptr = ptr->leftChild;
+			}
+			else if (ptr->key < key) {
+				requiredPtr = ptr;
+				ptr = ptr->rightChild;
+			}
 		}
+		return requiredPtr;
+	}
+	Node* minimum(int value) {
+		Node* ptr = root;
+		if (ptr != nullptr) {
+			while (ptr->leftChild != nullptr) {
+				ptr = ptr->leftChild;
+			}
+		}
+		return ptr;
+	}
+	Node* maximum(int value) {
+		Node* ptr = root;
+		if (ptr != nullptr) {
+			while (ptr->rightChild != nullptr) {
+				ptr = ptr->rightChild;
+			}
+		}
+		return ptr;
 	}
 public:
-	BST() {
+	Map() {
 		root = nullptr;
 		size = 0;
 	}
-	BST(keyType key, T value) {
+	Map(keyType key, T value) {
 		root = new Node(key, value);
 		size = 1;
 	}
-	BST(const BST& bst) {
+	Map(const Map& bst) {
 		this->size = bst.size;
 		if (bst.size == 0) {
 			root = nullptr;
@@ -67,20 +103,8 @@ public:
 		Node* bstPtr = bst.root;
 		Node* ptr = root;
 		copyNode(*root, *bst.root);
-		std::vector<Node*> visitedNodes;
-		if (root != nullptr) {
-			simmetricTraversal(root, visitedNodes);
-			for (int i = 1; i < size - 1; i++) {
-				visitedNodes[i]->previous = visitedNodes[i - 1];
-				visitedNodes[i]->next = visitedNodes[i + 1];
-			}
-			if (size > 1) {
-				visitedNodes[size - 1]->previous = visitedNodes[size - 2];
-				visitedNodes[0]->next = visitedNodes[1];
-			}
-		}
 	}
-	BST& operator=(const BST& bst) {
+	Map& operator=(const Map& bst) {
 		this->size = bst.size;
 		if (bst.size == 0) {
 			root = nullptr;
@@ -90,20 +114,54 @@ public:
 		Node* bstPtr = bst.root;
 		Node* ptr = root;
 		copyNode(*root, *bst.root);
-		std::vector<Node*> visitedNodes;
-		if (root != nullptr) {
-			simmetricTraversal(root, visitedNodes);
-			for (int i = 1; i < size - 1; i++) {
-				visitedNodes[i]->previous = visitedNodes[i - 1];
-				visitedNodes[i]->next = visitedNodes[i + 1];
-			}
-			if (size > 1) {
-				visitedNodes[size - 1]->previous = visitedNodes[size - 2];
-				visitedNodes[0]->next = visitedNodes[1];
-			}
-		}
 		return *this;
 	}
+	class Iterator : std::iterator< std::bidirectional_iterator_tag, Node> {
+	private:
+		Node* ptr;
+		Map* bst;
+	public:
+		Iterator(Node* ptr, Map* bst) {
+			this->ptr = ptr;
+			this->bst = bst;
+		}
+		Iterator(const Iterator& it) {
+			this->ptr = it.ptr;
+			this->bst = it.bst;
+		}
+		Iterator& operator=(const Iterator& it) {
+			this->ptr = it.ptr;
+			this->bst = it.bst;
+			return *this;
+		}
+		Iterator& operator++() {
+			ptr = bst->next(ptr);
+			return *this;
+		}
+		Iterator& operator--() {
+			ptr = bst->previous(ptr);
+			return *this;
+		}
+		Iterator operator++(int) {
+			Iterator temp = *this;
+			ptr = bst->next(ptr);
+			return temp;
+		}
+		Iterator operator--(int) {
+			Iterator temp = *this;
+			ptr = bst->previous(ptr);
+			return temp;
+		}
+		bool operator==(const Iterator& it) {
+			return (ptr == it.ptr && bst == it.bst);
+		}
+		bool operator!=(const Iterator& it) {
+			return (ptr != it.ptr || bst != it.bst);
+		}
+		std::pair<const keyType, T> operator*() {
+			return std::make_pair(ptr->key, ptr->value);
+		}
+	};
 	void insert(keyType key, T value) {
 		bool placed = false;
 		Node* ptr = root;
@@ -122,12 +180,6 @@ public:
 				}
 				else {
 					ptr->rightChild = new Node(key, value);
-					if (ptr->next != nullptr) {
-						ptr->next->previous = ptr->rightChild;
-						ptr->rightChild->next = ptr->next;
-					}
-					ptr->next = ptr->rightChild;
-					ptr->rightChild->previous = ptr;
 					placed = true;
 					size++;
 				}
@@ -138,12 +190,6 @@ public:
 				}
 				else {
 					ptr->leftChild = new Node(key, value);
-					if (ptr->previous != nullptr) {
-						ptr->previous->next = ptr->leftChild;
-						ptr->leftChild->previous = ptr->previous;
-					}
-					ptr->previous = ptr->rightChild;
-					ptr->rightChild->next = ptr;
 					placed = true;
 					size++;
 				}
@@ -169,12 +215,10 @@ public:
 					else if (ptr->rightChild == nullptr && ptr->leftChild != nullptr) {
 						root = ptr->leftChild;
 						delete ptr;
-						root->next = nullptr;
 					}
 					else if (ptr->rightChild != nullptr && ptr->leftChild == nullptr) {
 						root = ptr->rightChild;
 						delete ptr;
-						root->previous = nullptr;
 					}
 					else {
 						Node* startingNode = root;
@@ -200,8 +244,6 @@ public:
 						requiredNode->leftChild = root->leftChild;
 						requiredNode->rightChild = root->rightChild;
 						root = requiredNode;
-						ptr->previous->next = root;
-						root->previous = ptr->previous;
 						delete ptr;
 					}
 				}
@@ -209,51 +251,27 @@ public:
 					if (ptr->rightChild == nullptr && ptr->leftChild == nullptr) {
 						if (ptrParent->rightChild == ptr) {
 							ptrParent->rightChild = nullptr;
-							if (ptr->next != nullptr) {
-								ptr->next->previous = ptrParent;
-								ptrParent->next = ptr->next;
-							}
 						}
 						else {
 							ptrParent->leftChild = nullptr;
-							if (ptr->previous != nullptr) {
-								ptr->previous->next = ptrParent;
-								ptrParent->previous = ptr->previous;
-							}
 						}
 						delete ptr;
 					}
 					else if (ptr->rightChild == nullptr && ptr->leftChild != nullptr) {
 						if (ptrParent->rightChild == ptr) {
 							ptrParent->rightChild = ptr->leftChild;
-							if (ptr->next != nullptr) {
-								ptr->next->previous = ptr->previous;
-								ptr->previous->next = ptr->next;
-							}
 						}
 						else {
 							ptrParent->leftChild = ptr->leftChild;
-							if (ptr->previous != nullptr) {
-								ptr->previous->next = ptrParent;
-								ptrParent->previous = ptr->previous;
-							}
 						}
 						delete ptr;
 					}
 					else if (ptr->rightChild != nullptr && ptr->leftChild == nullptr) {
 						if (ptrParent->rightChild == ptr) {
 							ptrParent->rightChild = ptr->rightChild;
-							if (ptr->previous != nullptr) {
-								ptr->previous->next = ptr->next;
-								ptr->next->previous = ptr->previous;
-							}
 						}
 						else {
 							ptrParent->leftChild = ptr->rightChild;
-							if (ptr->previous != nullptr) {
-								ptr->previous->next = ptr->next;
-								ptr->next->previous = ptr->previous;
-							}
 						}
 						delete ptr;
 					}
@@ -286,10 +304,6 @@ public:
 						}
 						requiredNode->leftChild = ptr->leftChild;
 						requiredNode->rightChild = ptr->rightChild;
-						if (ptr->previous != nullptr) {
-							ptr->previous->next = ptr->next;
-							ptr->next->previous = ptr->previous;
-						}
 						delete ptr;
 					}
 				}
@@ -369,12 +383,6 @@ public:
 				}
 				else {
 					ptr->rightChild = new Node(key, T());
-					if (ptr->next != nullptr) {
-						ptr->next->previous = ptr->rightChild;
-						ptr->rightChild->next = ptr->next;
-					}
-					ptr->next = ptr->rightChild;
-					ptr->rightChild->previous = ptr;
 					found = true;
 					size++;
 					value = &ptr->rightChild->value;
@@ -386,12 +394,6 @@ public:
 				}
 				else {
 					ptr->leftChild = new Node(key, T());
-					if (ptr->previous != nullptr) {
-						ptr->previous->next = ptr->leftChild;
-						ptr->leftChild->previous = ptr->previous;
-					}
-					ptr->leftChild->next = ptr;
-					ptr->previous = ptr->leftChild;
 					found = true;
 					size++;
 					value = &ptr->leftChild->value;
@@ -431,7 +433,7 @@ public:
 	int Size() {
 		return size;
 	}
-	int empty() {
+	bool empty() {
 		bool isEmpty = false;
 		if (size == 0) {
 			isEmpty = true;
@@ -467,152 +469,35 @@ public:
 		return requiredKey;
 	}
 	keyType minimum() {
-		if (root == nullptr) {
-			return keyType();
+		Node* ptr = root;
+		if (ptr != nullptr) {
+			while (ptr->leftChild != nullptr) {
+				ptr = ptr->leftChild;
+			}
 		}
-		Node* current = root;
-		while (current->previous != nullptr) {
-			current = current->previous;
-		}
-		return current->key;
+		return ptr->key;
 	}
 	keyType maximum() {
-		if (root == nullptr) {
-			return keyType();
+		Node* ptr = root;
+		if (ptr != nullptr) {
+			while (ptr->rightChild != nullptr) {
+				ptr = ptr->rightChild;
+			}
 		}
-		Node* current = root;
-		while (current->next != nullptr) {
-			current = current->next;
-		}
-		return current->key;
+		return ptr->key;
 	}
-	~BST() {
-		clear();
-		delete root;
+	Iterator begin() {
+		Iterator it(minimum(0), this);
+		return it;
+	}
+	Iterator end() {
+		Iterator it(maximum(0), this);
+		return it;
+	}
+	~Map() {
+		if (root != nullptr) {
+			clear();
+			delete root;
+		}
 	}
 };
-
-int main() {
-	BST<int, int> bst1;
-	std::cout << bst1.Size() << '\n';
-	std::cout << bst1.empty() << '\n';
-	std::cout << "Test insert\n";
-	bst1.insert(0, 0);
-	bst1.insert(4, 5);
-	try {
-		bst1.insert(4, 6);
-	}
-	catch (std::exception& ex) {
-		std::cout << ex.what();
-	}
-	std::cout << bst1.at(0) << '\n';
-	bst1.insert(-4, 5);
-	std::cout << bst1.at(-4) << '\n';
-	bst1.insert(10, 8);
-	std::cout << bst1.at(10) << '\n';
-	bst1.insert(11, 9);
-	std::cout << bst1.at(11) << '\n';
-	std::cout << bst1.Size() << '\n';
-	bst1.erase(0);
-	try {
-		std::cout << bst1.at(0) << '\n';
-	}
-	catch (std::exception& ex) {
-		std::cout << ex.what();
-	}
-	bst1.insert(0, 5);
-	std::cout << "Test erase\n";
-	std::cout << bst1.at(0) << '\n';
-	std::cout << bst1.at(-4) << '\n';
-	std::cout << bst1.at(10) << '\n';
-	std::cout << bst1.at(11) << '\n';
-	bst1.erase(10);
-	std::cout << '\n';
-	std::cout << bst1.at(0) << '\n';
-	std::cout << bst1.at(-4) << '\n';
-	try {
-		std::cout << bst1.at(10) << '\n';
-	}
-	catch (std::exception& ex) {
-		std::cout << ex.what();
-	}
-	std::cout << bst1.at(11) << '\n';
-	bst1.at(0) = 200;
-	std::cout << "Test at\n";
-	std::cout << bst1.at(0) << '\n';
-	std::cout << "Test find\n";
-	std::cout << bst1.find(-4) << '\n';
-	std::cout << bst1.find(1) << '\n';
-	std::cout << "Test []\n";
-	std::cout << bst1[0] << '\n';
-	std::cout << bst1[1] << '\n';
-	bst1[1] = 15;
-	std::cout << bst1[1] << '\n';
-	bst1.clear();
-	std::cout << bst1[1] << '\n';
-	bst1.insert(5, 100);
-	bst1.insert(-4, 8);
-	bst1.insert(10, 5);
-	bst1.insert(11, 9);
-	std::cout << "Test next\n";
-	std::cout << bst1.next(10) << '\n';
-	std::cout << "Test previous\n";
-	std::cout << bst1.previous(10) << '\n';
-	std::cout << "Test copy constructor\n";
-	BST<int, int> bst2(bst1);
-	std::cout << "bst1:\n";
-	std::cout << bst1.at(5) << '\n';
-	std::cout << bst1.at(-4) << '\n';
-	std::cout << bst1.at(10) << '\n';
-	std::cout << bst1.at(11) << '\n';
-	std::cout << "bst2:\n";
-	std::cout << bst2.at(5) << '\n';
-	std::cout << bst2.at(-4) << '\n';
-	std::cout << bst2.at(10) << '\n';
-	std::cout << bst2.at(11) << '\n';
-	bst1.at(5) = 0;
-	bst1.at(-4) = 0;
-	bst1.at(10) = 0;
-	bst1.at(11) = 0;
-	std::cout << "bst1:\n";
-	std::cout << bst1.at(5) << '\n';
-	std::cout << bst1.at(-4) << '\n';
-	std::cout << bst1.at(10) << '\n';
-	std::cout << bst1.at(11) << '\n';
-	std::cout << "bst2:\n";
-	std::cout << bst2.at(5) << '\n';
-	std::cout << bst2.at(-4) << '\n';
-	std::cout << bst2.at(10) << '\n';
-	std::cout << bst2.at(11) << '\n';
-	std::cout << "Test operator=\n";
-	BST<int, int> bst3;
-	bst3 = bst2;
-	std::cout << "bst2:\n";
-	std::cout << bst2.at(5) << '\n';
-	std::cout << bst2.at(-4) << '\n';
-	std::cout << bst2.at(10) << '\n';
-	std::cout << bst2.at(11) << '\n';
-	std::cout << "bst3:\n";
-	std::cout << bst3.at(5) << '\n';
-	std::cout << bst3.at(-4) << '\n';
-	std::cout << bst3.at(10) << '\n';
-	std::cout << bst3.at(11) << '\n';
-	bst2.at(5) = 0;
-	bst2.at(-4) = 0;
-	bst2.at(10) = 0;
-	bst2.at(11) = 0;
-	std::cout << "bst2:\n";
-	std::cout << bst2.at(5) << '\n';
-	std::cout << bst2.at(-4) << '\n';
-	std::cout << bst2.at(10) << '\n';
-	std::cout << bst2.at(11) << '\n';
-	std::cout << "bst3:\n";
-	std::cout << bst3.at(5) << '\n';
-	std::cout << bst3.at(-4) << '\n';
-	std::cout << bst3.at(10) << '\n';
-	std::cout << bst3.at(11) << '\n';
-	std::cout << "Testing minimum\n";
-	std::cout << bst3.minimum() << '\n';
-	std::cout << "Testing maximum\n";
-	std::cout << bst3.maximum() << '\n';
-}

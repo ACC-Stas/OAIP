@@ -1,8 +1,9 @@
 #include <iostream>
-#include "BST.h"
+#include "Map.h"
+#include "Set.h"
 
 int main() {
-	BST<int, int> bst1;
+	Map<int, int> bst1;
 	std::cout << bst1.Size() << '\n';
 	std::cout << bst1.empty() << '\n';
 	std::cout << "Test insert\n";
@@ -68,7 +69,7 @@ int main() {
 	std::cout << "Test previous\n";
 	std::cout << bst1.previous(10) << '\n';
 	std::cout << "Test copy constructor\n";
-	BST<int, int> bst2(bst1);
+	Map<int, int> bst2(bst1);
 	std::cout << "bst1:\n";
 	std::cout << bst1.at(5) << '\n';
 	std::cout << bst1.at(-4) << '\n';
@@ -94,7 +95,7 @@ int main() {
 	std::cout << bst2.at(10) << '\n';
 	std::cout << bst2.at(11) << '\n';
 	std::cout << "Test operator=\n";
-	BST<int, int> bst3;
+	Map<int, int> bst3;
 	bst3 = bst2;
 	std::cout << "bst2:\n";
 	std::cout << bst2.at(5) << '\n';
@@ -120,4 +121,30 @@ int main() {
 	std::cout << bst3.at(-4) << '\n';
 	std::cout << bst3.at(10) << '\n';
 	std::cout << bst3.at(11) << '\n';
+	std::cout << bst3.at(1) << '\n';
+	std::cout << "Testing Iterators\n";
+	Map<int, int>::Iterator it3 = bst3.begin();
+	for (; it3 != bst3.end(); ++it3) {
+		std::cout << (*it3).first << " " << (*it3).second << '\n';
+	}
+	std::cout << (*it3).first << " " << (*it3).second << '\n';
+	for (; it3 != bst3.begin(); --it3) {
+		std::cout << (*it3).first << " " << (*it3).second << '\n';
+	}
+	std::cout << (*it3).first << " " << (*it3).second << '\n';
+	std::cout << "Testing set\n";
+	Set<int> st1;
+	st1.insert(5);
+	st1.insert(3);
+	st1.insert(10);
+	st1.insert(20);
+	Set<int>::Iterator itS = st1.begin();
+	for (; itS != st1.end(); ++itS) {
+		std::cout << *itS << '\n';
+	}
+	std::cout << *itS << '\n';
+	for (; itS != st1.begin(); --itS) {
+		std::cout << *itS << '\n';
+	}
+	std::cout << *itS << '\n';
 }
