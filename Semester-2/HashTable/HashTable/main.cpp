@@ -1,6 +1,16 @@
 ﻿#include <iostream>
 #include "Header.h"
 
+void foo(const HashTable<int, int>& h) {
+	std::cout << h[10] << '\n';
+	try {
+		std::cout << h[999];
+	}
+	catch (std::exception& ex) {
+		std::cout << ex.what();
+	}
+}
+
 int main() {
 	HashTable<int, int> hs;
 	std::cout << "Testing insert and rehash\n";
@@ -57,4 +67,6 @@ int main() {
 	std::cout << hs[8] << '\n';
 	hs[202] = 43;
 	std::cout << hs[202] << '\n';
+	std::cout << "Testing const operator[]\n";
+	foo(hs);
 }

@@ -54,6 +54,15 @@ public:
 			}
 		}
 	}
+	T operator[](const KeyType key) const {
+		int position = hash(key) % size;
+		for (auto it = elements[position].begin(); it != elements[position].end(); it++) {
+			if ((*it).first == key) {
+				return (*it).second;
+			}
+		}
+		throw std::exception("There is no such element\n");
+	}
 	void insert(const KeyType key, T value) {
 		int position = hash(key) % size;
 		int counter = 0;
