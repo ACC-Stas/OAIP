@@ -1,5 +1,6 @@
-#include <iostream>
+﻿#include <iostream>
 #include <ccomplex>
+#include <Windows.h>
 #include <glut.h>
 
 class ManDelBrot {
@@ -54,7 +55,11 @@ public:
 
 };
 
-float WinWid = 400, WinHei = 400;
+float WinWid = 1000, WinHei = 800;
+int currentX = 0, currentY = 0;
+double depth = 4;
+int previousCommand = 0;
+int bypasStep = 5;
 
 void init() {
 
@@ -81,10 +86,10 @@ void draw() {
 	glBegin(GL_POINTS);
 
 	int it;
-	ManDelBrot mandel(1, 1, 50, 50, WinWid, WinHei);
+	ManDelBrot mandel(depth, depth, currentX, currentY, WinWid, WinHei);
 
-	for (int x = -WinWid/2; x < WinWid/2; x+=1) {
-		for (int y = -WinHei / 2; y < WinHei/2; y+=1) {
+	for (int x = -WinWid/2; x < WinWid/2; x+=bypasStep) {
+		for (int y = -WinHei / 2; y < WinHei/2; y+=bypasStep) {
 			try {
 				it = mandel.getIterations(x, y);
 			}
@@ -99,9 +104,9 @@ void draw() {
 				glColor3b(it%2*128, it%4*33, it%2*66);
 			}
 			glVertex2i(x, y);
-			std::cout << it << " ";
+			//std::cout << it << " ";
 		}
-		std::cout << '\n';
+		//std::cout << '\n';
 	}
 
 	glEnd();
@@ -118,9 +123,85 @@ void mouse(int button, int state, int x, int y) {
 
 void key(int key, int x, int y) {
 	std::cout << key << " " << x << " " << y << '\n';
+	switch (key) {
+	case 100:  //left arrow
+		currentX -= 50;
+		draw();
+		break;
+	case 101:
+		currentY += 50;
+		draw();
+		break;
+	case 102:
+		currentX += 50;
+		draw();
+		break;
+	case 103:
+		currentY -= 50;
+		draw();
+		break;
+	case 104:  //page up
+		if (bypasStep >= 2) {
+			bypasStep--;
+			draw();
+		}
+		break;
+	case 105:  //page down
+		bypasStep++;
+		draw();
+		break;
+	case 107:  //end
+		exit(0);
+		break;
+	default:
+		break;
+	}
+}
+
+void charKey(unsigned char key, int x, int y) {
+	std::cout << (int)key << " " << x << " " << y << '\n';
+	switch ((int)key) {
+	case '+':
+		depth /= 2;
+		draw();
+		break;
+	case '-':
+		depth *= 2;
+		draw();
+		break;
+	case 1:  //ctrl + a
+		if (WinWid < 1900) {
+		WinWid += 100;
+		draw();
+	}
+	break;
+	case 19:  //ctrl + s
+		if (WinWid >= 200) {
+			WinWid -= 100;
+			draw();
+		}
+		break;
+	case 17: //ctrl + q
+		if (WinHei < 900) {
+			WinHei += 100;
+			draw();
+		}
+		break;
+	case 23: //ctrl + w
+		if (WinHei >= 200) {
+			WinHei -= 100;
+			draw();
+		}
+		break;
+	default:
+		break;
+	}
 }
 
 int main(int argc, char** argv) {
+
+	HWND hConsole = GetConsoleWindow();//Если компилятор старый заменить на GetForegroundWindow()
+	ShowWindow(hConsole, SW_HIDE);//собственно прячем оконо консоли
 
 	glutInit(&argc, argv);
 
@@ -128,7 +209,7 @@ int main(int argc, char** argv) {
 
 	glutInitWindowSize(WinWid, WinHei);
 
-	glutInitWindowPosition(400, 150);
+	glutInitWindowPosition(0, 0);
 
 	glutCreateWindow("WebWindow");
 
@@ -137,6 +218,8 @@ int main(int argc, char** argv) {
 	glutMouseFunc(mouse);
 
 	glutSpecialFunc(key);
+
+	glutKeyboardFunc(charKey);
 
 	init();
 
