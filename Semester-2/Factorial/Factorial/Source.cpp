@@ -17,10 +17,10 @@ public:
 	ManDelBrot(double fieldHeight, double fieldWidth, double centreX, double centreY, int NumberOfXPixels, int NumberOfYPixels) {
 		this->fieldHeight = fieldHeight;
 		this->fieldWidth = fieldWidth;
-		this->centreX = centreX;
-		this->centreY = centreY;
 		this->NumberOfXPixels = NumberOfXPixels;
 		this->NumberOfYPixels = NumberOfYPixels;
+		this->centreX = centreX;
+		this->centreY = centreY;
 	};
 	void setCentreX(double centreX) {
 		this->centreX = centreX;
@@ -55,11 +55,10 @@ public:
 
 };
 
-float WinWid = 1000, WinHei = 800;
+float WinWid = 400, WinHei = 400;
 int currentX = 0, currentY = 0;
 double depth = 4;
-int previousCommand = 0;
-int bypasStep = 5;
+int bypasStep = 4;
 
 void init() {
 
