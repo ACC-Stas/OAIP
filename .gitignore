@@ -11,3 +11,12 @@
 *.vcxproj
 *.vcxproj.filters
 *.vcxproj.user
+
+## for clion
+
+*/.idea
+*/*/.idea
+*/*/*/.idea
+*/cmake-build-debug
+*/*/cmake-build-debug
+*/*/*/cmake-build-debug
